@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bubbles App</title>
+
+    <style>
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          background-color: #f2f2f2;
+          font-family: Arial, sans-serif;
+        }
+        
+        .container {
+          /* border: 1px solid red; */
+        
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 20px;
+          max-width: 90%;
+          margin: auto;
+          text-align: center;
+        }
+        
+        canvas {
+          display: block;
+          margin: auto;
+          border: 1px solid black;
+          max-width: 100%;
+          height: auto;
+        }
+        
+        button {
+          background-color: #4CAF50;
+          border: none;
+          color: white;
+          padding: 10px 20px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 10px;
+          cursor: pointer;
+          border-radius: 5px;
+          max-width: 100%;
+        }
+        
+      </style>
+      
+   
+
+</head>
+  <body>
+    
+    <div class="container">
+        <h2>Bubbles App</h2>
+        <canvas id="myCanvas"></canvas>
+        <button id="hit">Hit</button>
+        <button id="reset">Reset</button>
+      </div>
+      
+ 
+   
+    <script src="module.js"></script>
+  </body>
+</html>
