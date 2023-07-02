@@ -80,7 +80,7 @@ http://localhost:8080/swagger-ui/
 ```
 
 
-![ErDiagram](![Screenshot (664)](https://github.com/ChanduDhakad/E-commerece/assets/97527158/db86d3af-26ab-4203-99cb-487cace50421))
+### ErDiagram https://github.com/ChanduDhakad/E-commerece/assets/97527158/db86d3af-26ab-4203-99cb-487cace50421
 
 
 
