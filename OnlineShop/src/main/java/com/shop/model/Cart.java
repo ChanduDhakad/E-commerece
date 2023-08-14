@@ -1,5 +1,9 @@
 package com.shop.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,25 +12,22 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
-
-@Entity
 @NoArgsConstructor
-public class Address {
+@Entity
+
+public class Cart {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer addressID;
+	private Integer cartID;
+	private Integer totalAmount;
 
-	private String street;
-	private String city;
-	private String state;
-	private String country;
-	private String postalCode;
-	private String addressType;
-
-	
 	@JsonIgnore
-	@ManyToOne
+	@OneToOne	
 	private Customer customer;
+	
 
+	@JsonIgnore
+	@OneToMany
+	private List<Product>products=new ArrayList<>();
 }

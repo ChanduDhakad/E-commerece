@@ -13,10 +13,12 @@ import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @Entity
+@NoArgsConstructor
 public class OrderItems {
 
 	@Id

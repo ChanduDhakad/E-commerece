@@ -6,13 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.exception.LoginException;
-import com.shop.model.Admin;
-import com.shop.model.CurrentUser;
-import com.shop.model.Customer;
-import com.shop.model.LoginDTO;
-import com.shop.repository.AdminRepositroy;
-import com.shop.repository.CurrentUserRepositroy;
-import com.shop.repository.CustomerRepository;
+import com.shop.model.*;
+import com.shop.repository.*;
 
 import net.bytebuddy.utility.RandomString;
 
@@ -31,9 +26,9 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public String login(LoginDTO dto) throws LoginException {
 
-		Admin admin = adminRepository.findByAdminUsername(dto.getUsername());
+		Admin admin = adminRepository.findByUserName(dto.getUsername());
 		Customer customer = customerRepository.findByUserName(dto.getUsername());
-   System.out.println("Custoemr "+customer);
+		System.out.println("Custoemr " + customer);
 		if (admin != null && customer == null) {
 			Optional<CurrentUser> cu = currentUserRepository.findById(admin.getAdminId());
 			if (cu.isPresent()) {
@@ -49,7 +44,7 @@ public class LoginServiceImpl implements LoginService {
 			throw new LoginException("Please enter a valid password");
 
 		} else if ((admin == null) && (customer != null)) {
-			
+
 			System.out.println("Insise Custsomer block ");
 			Optional<CurrentUser> cu = currentUserRepository.findById(customer.getCustomerID());
 			if (cu.isPresent()) {

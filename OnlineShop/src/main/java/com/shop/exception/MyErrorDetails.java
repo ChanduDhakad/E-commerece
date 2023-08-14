@@ -12,7 +12,7 @@ import lombok.Data;
 
 public class MyErrorDetails {
 
-	private String msg;
-	private LocalDateTime localDateTime;
+	private String msg;	
 	private String desc;
+	private LocalDateTime localDateTime;
 }

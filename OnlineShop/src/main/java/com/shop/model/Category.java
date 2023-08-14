@@ -1,17 +1,12 @@
 package com.shop.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import javax.persistence.*;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @Entity
+@NoArgsConstructor
 public class Category {
 
 	@Id

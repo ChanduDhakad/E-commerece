@@ -30,7 +30,7 @@ public class Order {
 //	@Enumerated
 //	private Status status;
 
-	private String billingAddress;
+	private Integer billingAmount;
 	private String deliveryAddress;
 
 	@OneToOne
