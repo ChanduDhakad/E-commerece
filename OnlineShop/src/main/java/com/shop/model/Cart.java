@@ -1,33 +1,35 @@
 package com.shop.model;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Cart {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer cartID;
-	private Integer totalAmount;
-
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int cartId;
+	
+	@OneToOne
 	@JsonIgnore
-	@OneToOne	
 	private Customer customer;
 	
-
+	private double cartValue;
+	
+	@ElementCollection
+	@CollectionTable(name = "cart_product", joinColumns = @JoinColumn(name="cart_id"))
+	@Column(name = "Quantity")
+	@MapKeyJoinColumn(name = "product_id", referencedColumnName = "seller_ProductId")
 	@JsonIgnore
-	@OneToMany
-	private List<Product>products=new ArrayList<>();
+	private Map<Products, Integer> products;
 }

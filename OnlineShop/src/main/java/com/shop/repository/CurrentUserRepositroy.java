@@ -4,15 +4,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.stereotype.Repository;
 
-import com.shop.model.CurrentUser;
+import com.shop.model.CurrentUserSession;
 
 
 
 
 @Repository
-public interface CurrentUserRepositroy extends JpaRepository<CurrentUser, Integer> {
+public interface CurrentUserRepositroy extends JpaRepository<CurrentUserSession, Integer> {
 	
-	public CurrentUser findByUuid(String uuid);
+	public CurrentUserSession findByUuid(String uuid);
 
 
 }

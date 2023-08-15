@@ -1,35 +1,49 @@
 package com.shop.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.exception.*;
-import com.shop.model.Seller;
-
-import com.shop.service.SellerService;
+import com.shop.model.*;
+import com.shop.service.*;
 
 @RestController
 public class SellerController {
 
 	@Autowired
-	private SellerService  sellerService;
-
-	@PostMapping("/seller/{key}")
-	public ResponseEntity<Seller> addNewSeller(@RequestParam String key, @RequestBody Seller seller) throws AdminException, LoginException, SellerException {
-		Seller s = sellerService.addNewSeller(seller, key);
-		return new ResponseEntity<Seller>(s, HttpStatus.CREATED);
+	private  SellerService sService;
+	
+	@PostMapping("/AddSeller")
+	public ResponseEntity<Seller> AddSellerHandler(@Valid @RequestBody Seller seller) throws SellerException{
+		
+		Seller resultSeller= sService.insertSeller(seller);
+		
+		return new ResponseEntity<Seller>(resultSeller,HttpStatus.ACCEPTED);
 	}
 	
-	/*
-	
-	@PutMapping("/admin")
-	public ResponseEntity<Admin> updateUserHandler(@Valid @RequestParam(required = false) String key,
-			@RequestBody Admin user) throws AdminException, LoginException {
-		Admin updatedUser = aService.updateAdmin(user, key);
-		return new ResponseEntity<Admin>(updatedUser, HttpStatus.OK);
+	@PutMapping("/updateName")
+	public ResponseEntity<Seller> updateNameHandler(@RequestParam Integer sellerId,@RequestParam String key,@RequestParam String SellerName) throws SellerException, LoginException{
+		
+		Seller sell= sService.updateName(sellerId, key, SellerName);
+		
+		return new ResponseEntity<Seller>(sell,HttpStatus.OK);
 	}
 	
-	*/
+	@DeleteMapping("/deleteSeller")
+	public ResponseEntity<String> deleteSellerHandler(@RequestParam Integer sellerId,@RequestParam String key) throws SellerException, LoginException{
+		String message= sService.deleteSeller(sellerId, key);
+		
+		return new ResponseEntity<String>(message,HttpStatus.ACCEPTED);
+	} 
+	
+	
 }

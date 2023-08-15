@@ -6,4 +6,5 @@ import com.shop.model.Admin;
 
 public interface AdminRepository extends JpaRepository<Admin,Integer> {
 
+	Admin findByUserName(String userName);
 }

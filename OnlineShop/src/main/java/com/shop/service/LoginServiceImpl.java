@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shop.exception.LoginException;
+import com.shop.exception.*;
 import com.shop.model.*;
 import com.shop.repository.*;
 
@@ -15,7 +15,7 @@ import net.bytebuddy.utility.RandomString;
 public class LoginServiceImpl implements LoginService {
 
 	@Autowired
-	private AdminRepositroy adminRepository;
+	private AdminRepository adminRepository;
 
 	@Autowired
 	private CurrentUserRepositroy currentUserRepository;
@@ -23,54 +23,84 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	private CustomerRepository customerRepository;
 
+	@Autowired
+	private SellerRepository sellerRepository;
+
 	@Override
-	public String login(LoginDTO dto) throws LoginException {
+	public CurrentUserSession customerLogin(Login login) throws LoginException {
 
-		Admin admin = adminRepository.findByUserName(dto.getUsername());
-		Customer customer = customerRepository.findByUserName(dto.getUsername());
-		System.out.println("Custoemr " + customer);
-		if (admin != null && customer == null) {
-			Optional<CurrentUser> cu = currentUserRepository.findById(admin.getAdminId());
-			if (cu.isPresent()) {
-				throw new LoginException("already loggedIn");
-			}
-			if (admin.getPassword().equals(dto.getPassword())) {
-				RandomString rs = new RandomString();
-				String key = rs.make(6);
-				CurrentUser newCurrentUser = new CurrentUser(admin.getAdminId(), key, true, LocalDateTime.now());
-				currentUserRepository.save(newCurrentUser);
-				return newCurrentUser.toString();
-			}
-			throw new LoginException("Please enter a valid password");
-
-		} else if ((admin == null) && (customer != null)) {
-
-			System.out.println("Insise Custsomer block ");
-			Optional<CurrentUser> cu = currentUserRepository.findById(customer.getCustomerID());
-			if (cu.isPresent()) {
-				throw new LoginException("already loggedIn");
-			}
-			if (customer.getPassword().equals(dto.getPassword())) {
-				RandomString rs = new RandomString();
-				String key = rs.make(6);
-				CurrentUser newCurrentUser = new CurrentUser(customer.getCustomerID(), key, false, LocalDateTime.now());
-				currentUserRepository.save(newCurrentUser);
-				return newCurrentUser.toString();
-			}
-			throw new LoginException("Please enter a valid password");
+		CurrentUserSession activeUser = null;
+		Customer customer = customerRepository.findByEmail(login.getEmail());
+		if (customer == null) {
+			throw new LoginException("No Customer Found With this Email");
 		} else {
-			throw new LoginException("Please enter a valid username");
+			Optional<CurrentUserSession> opt = currentUserRepository.findById(customer.getCustomerId());
+			if (opt.isPresent()) {
+				throw new LoginException("User Already Logged In....");
+			} else {		
+			
+				
+				String uuid = RandomString.make(6);
+				CurrentUserSession cus = new CurrentUserSession(customer.getCustomerId(), LocalDateTime.now(), uuid);
+				activeUser = currentUserRepository.save(cus);
+			}
 		}
+		return activeUser;
 	}
 
 	@Override
-	public String logout(String key) throws LoginException {
-		CurrentUser cu = currentUserRepository.findByUuid(key);
-		if (cu == null) {
-			throw new LoginException("User not loggedin with this username");
+	public CurrentUserSession sellerlogin(Login login) throws LoginException {
+
+		CurrentUserSession activeSeller = null;
+		Seller seller = sellerRepository.findByEmail(login.getEmail());
+		if (seller == null) {
+			throw new LoginException("No Seller Found With this Email");
+		} else {
+			Optional<CurrentUserSession> opt = currentUserRepository.findById(seller.getSellerId());
+			if (opt.isPresent()) {
+				throw new LoginException("Seller Already Logged In....");
+			} else {
+				
+				String uuid = new RandomString().make(6);
+				CurrentUserSession cus = new CurrentUserSession(seller.getSellerId(), LocalDateTime.now(), uuid);
+				activeSeller = currentUserRepository.save(cus);
+			}
 		}
-		currentUserRepository.delete(cu);
-		return "Loggedout";
+		return activeSeller;
+
+	}
+
+	@Override
+	public String Logout(Integer id, String uuid) throws LoginException {
+		CurrentUserSession cus = currentUserRepository.findByUuid(uuid);
+
+		if (cus == null)
+			throw new LoginException("Invalid Uuid....");
+
+		if (id != cus.getUserId())
+			throw new LoginException("Invalid Credentials");
+
+		currentUserRepository.delete(cus);
+		return "Logged Out";
+	}
+
+	@Override
+	public CurrentUserSession adminlogin(Login login) throws LoginException {
+		CurrentUserSession activeAdmin = null;
+		Admin admin = adminRepository.findByUserName(login.getEmail());
+		if (admin == null) {
+			throw new LoginException("No Seller Found With this Email");
+		} else {
+			Optional<CurrentUserSession> opt = currentUserRepository.findById(admin.getAdminId());
+			if (opt.isPresent()) {
+				throw new LoginException("Admin Already Logged In....");
+			} else {
+				String uuid = new RandomString().make(6);
+				CurrentUserSession cus = new CurrentUserSession(admin.getAdminId(), LocalDateTime.now(), uuid);
+				activeAdmin = currentUserRepository.save(cus);
+			}
+		}
+		return activeAdmin;
 	}
 
 }

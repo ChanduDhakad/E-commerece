@@ -5,17 +5,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shop.exception.AdminException;
-import com.shop.exception.LoginException;
-import com.shop.exception.SellerException;
-import com.shop.model.Address;
-import com.shop.model.Admin;
-import com.shop.model.CurrentUser;
-import com.shop.model.Seller;
-import com.shop.repository.AddressRepository;
-import com.shop.repository.AdminRepository;
-import com.shop.repository.CurrentUserRepositroy;
-import com.shop.repository.SellerRepository;
+import com.shop.exception.*;
+import com.shop.model.*;
+
+
+import com.shop.repository.*;
 
 @Service
 public class SellerServiceImpl implements SellerService {
@@ -27,30 +21,85 @@ public class SellerServiceImpl implements SellerService {
 	SellerRepository sellerRepository;
 
 	@Autowired
-	AdminRepository adminRepository;
+	CustomerRepository customerRepository;
 
 	@Autowired
-	AddressRepository addressRepository;
+	ProductRepository prodcutRepository;
+
+	@Autowired
+	CurrentUserRepositroy currentUserRepositroy;
+
+	@Autowired
+	CardRepository cardRepositroy;
+
+	@Autowired
+	CartRepository cartRepositroy;
+
+	@Autowired
+	CurrentUserRepositroy currentUserSession;
+
+	@Autowired
+	OrderRepository orderRepository;
+
+	@Autowired
+	FeedbackRepository feedbackRepository;
+
+
+	@Autowired
+	PaymentRepository paymentRepository;
 
 	@Override
-	public Seller addNewSeller(Seller seller, String adminKey) throws LoginException, SellerException, AdminException {
+	public Seller insertSeller(Seller seller) throws SellerException {
+		Seller existingSeller = sellerRepository.findByEmail(seller.getEmail());
 
-		Seller s = null;
-		CurrentUser cu = cur.findByUuid(adminKey);
-		if (cu == null) {
-			throw new LoginException("Login first");
-		} else {
-			Optional<Admin> opt = adminRepository.findById(cu.getUserId());
-			if (opt.isEmpty()) {
-				throw new AdminException("Admin not present with id " + cu.getUserId());
-			} else {
-				Address address = seller.getAddress();
-				Address sAddress = addressRepository.save(address);
-				seller.setAddress(sAddress);
-				s = sellerRepository.save(seller);
-			}
+		if (existingSeller != null) {
+			throw new SellerException("Seller with this Email already Exist");
 		}
-		return s;
+
+		Seller newSeller = sellerRepository.save(seller);
+
+		return newSeller;
+	}
+
+	@Override
+	public String deleteSeller(int sid, String Key) throws SellerException, LoginException {
+
+		Optional<Seller> opt = sellerRepository.findById(sid);
+		if (opt == null)
+			throw new SellerException("Invalid Credentials...!");
+
+		Seller seller = opt.get();
+
+		CurrentUserSession cus = currentUserSession.findByUuid(Key);
+
+		if (cus.getUserId() == sid) {
+			throw new LoginException("Please Login First");
+		}
+
+		sellerRepository.delete(seller);
+
+		return "We hope you enjoy our service " + seller.getSellerName();
+	}
+
+	@Override
+	public Seller updateName(int sid, String key, String sellerName) throws SellerException, LoginException {
+
+		Optional<Seller> opt = sellerRepository.findById(sid);
+		if (opt == null)
+			throw new SellerException("Invalid Credentials...!");
+
+		Seller seller = opt.get();
+
+		CurrentUserSession cus = currentUserRepositroy.findByUuid(key);
+
+		if (cus.getUserId() != sid) {
+			throw new LoginException("Please Login First");
+		}
+
+		seller.setSellerName(sellerName);
+		sellerRepository.save(seller);
+
+		return seller;
 	}
 
 }

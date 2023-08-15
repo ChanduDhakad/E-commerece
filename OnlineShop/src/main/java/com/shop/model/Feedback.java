@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -16,27 +17,37 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Payment {
+@Data
+public class  Feedback{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer paymentId;
+	private Integer feedBackId;
 	
-	private boolean paymentStatus;
+	@Min(1)
+	@Max(5)
+	private Integer productRating;
 	
-	private Integer paymentAmount;
+	@Min(1)
+	@Max(5)
+	private Integer serviceRating;
 	
-	private LocalDate DateOfPayment;
+	@Min(1)
+	@Max(5)
+	private Integer overAllRating;
 	
-	@JsonIgnore
+	@NotNull(message = "Message Cannot be Null")
+	private String Message;
+	
+	private LocalDate localdate;
+	
 	@OneToOne
-	private CardDetails card;
-	
 	@JsonIgnore
-	@OneToOne(cascade = CascadeType.ALL)
-	private Order order;
+	private Customer customer;
 	
+	@OneToOne
+	@JsonIgnore
+	private Order order;
 }

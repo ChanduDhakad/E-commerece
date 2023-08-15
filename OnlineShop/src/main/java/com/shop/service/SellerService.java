@@ -7,5 +7,12 @@ import com.shop.model.Seller;
 
 public interface SellerService {
 
-	Seller addNewSeller(Seller seller,String adminKey) throws LoginException,SellerException,AdminException ;
+
+	public Seller insertSeller(Seller seller) throws SellerException;
+
+	public String deleteSeller(int sid, String Key) throws SellerException, LoginException;
+
+	public Seller updateName(int sid, String key, String sellerName) throws SellerException, LoginException;
+
+
 }

@@ -1,9 +1,16 @@
 package com.shop.service;
 
 import com.shop.exception.LoginException;
-import com.shop.model.LoginDTO;
+import com.shop.model.CurrentUserSession;
+import com.shop.model.Login;
 
 public interface LoginService {
-	public String login(LoginDTO dto) throws LoginException;
-	public String logout(String key) throws LoginException;
+	
+public CurrentUserSession customerLogin(Login log) throws LoginException;
+	
+	public CurrentUserSession sellerlogin(Login log) throws LoginException;
+
+	public String Logout(Integer id , String uuid) throws LoginException;
+	
+	public CurrentUserSession adminlogin(Login log) throws LoginException;
 }

@@ -1,5 +1,6 @@
 package com.shop.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
@@ -11,13 +12,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "currentUsers")
-public class CurrentUser {
+public class CurrentUserSession {
+
 
 	@Id
 	@Column(unique = true)
-	private int userId;
-	private String uuid;
-	private Boolean admin;
+	private Integer userId;
 	private LocalDateTime timestamp;
+	private String uuid;
 
 }

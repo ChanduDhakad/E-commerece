@@ -11,28 +11,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@Entity
 @Data
 @AllArgsConstructor
-@Entity
 @NoArgsConstructor
-
-public class Product {
+@ToString
+public class ProductDTO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer productID;
-	private String name;
-	private String description;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer productDtoId;
+	
+	private Integer seller_ProductId;
+	private String ProductDtoName;
 	private Integer price;
-	private String currency;
-    
+	private String Category;
+	private Integer Quantity;
 	
-	@JsonIgnore
-	@ManyToOne	
-	private Category category;
 	
-	@JsonIgnore
-	@ManyToOne
-	private Seller seller;
 }

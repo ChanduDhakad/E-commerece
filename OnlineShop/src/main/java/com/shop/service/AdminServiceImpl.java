@@ -1,66 +1,74 @@
 package com.shop.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.shop.exception.AdminException;
+import com.shop.exception.LoginException;
 import com.shop.model.Admin;
+import com.shop.model.CurrentUserSession;
 import com.shop.repository.*;
 
 @Service
 public class AdminServiceImpl implements AdminService {
 
 	@Autowired
-	private AdminRepositroy adao;
+	private AdminRepository adminRepository;
 	@Autowired
-	private CurrentUserRepositroy cudao;
+	private CurrentUserRepositroy currentUserRepositroy ;
 
 	@Override
 	public Admin registerAdmin(Admin admin) throws AdminException {
-		Admin a = adao.save(admin);
-		return a;
+		Admin newAdmin=null;
+		Admin existingAdmin = adminRepository.findByUserName(admin.getUserName());
+		if(existingAdmin!=null) {
+			throw new AdminException("Admin already exist with username "+admin.getUserName());
+		}
+		newAdmin = adminRepository.save(admin);
+		return newAdmin;
 	}
 
-	/*
-	 * 
-	 * @Override public Admin getAdminByName(String adminUserName) throws
-	 * AdminException{ Admin existingUser = adao.findByAdminUsername(adminUserName);
-	 * return existingUser; }
-	 * 
-	 * @Override public Admin updateAdmin(Admin admin, String key) throws
-	 * AdminException, LoginException{ CurrentUser cu = cudao.findByUuid(key); if
-	 * (cu == null) { throw new LoginException("Login first"); } Optional<Admin> a =
-	 * adao.findById(admin.getAdminId()); if (a.isPresent()) { return
-	 * adao.save(admin); } throw new AdminException("You are not an admin"); }
-	 * 
-	 * @Override public Admin deleteAdmin(String adminUserName, String key) throws
-	 * AdminException { Admin a = adao.findByAdminUsername(adminUserName);
-	 * CurrentUser cu = cudao.findByUuid(key); if (a == null) { throw new
-	 * AdminException("Sorry it's a wrong username"); } if (cudao.findByUuid(key) !=
-	 * null) { adao.delete(a); cudao.delete(cu); return a; } throw new
-	 * AdminException("Please login first"); }
-	 * 
-	 * @Override public Admin findAdminById(Integer adminId) throws AdminException{
-	 * Optional<Admin> opt = adao.findById(adminId); if (opt.isPresent()) { return
-	 * opt.get(); } throw new
-	 * AdminException("there is no admin present with this id"); }
-	 * 
-	 * @Override public Admin findAdminByUserName(String adminUserName, String key)
-	 * throws AdminException, LoginException{ CurrentUser cu =
-	 * cudao.findByUuid(key); if (cu == null) { throw new
-	 * LoginException("Login first"); } Optional<Admin> a =
-	 * adao.findById(adao.findByAdminUsername(adminUserName).getAdminId()); if
-	 * (a.isPresent()) { return a.get(); } throw new
-	 * AdminException("You are not an admin"); }
-	 * 
-	 * @Override public List<Admin> findAllAdmin(String key) throws AdminException,
-	 * LoginException{ CurrentUser cu = cudao.findByUuid(key); if (cu == null) {
-	 * throw new LoginException("Login first"); } Optional<Admin> a =
-	 * adao.findById(cu.getUserId()); if (a.isPresent()) { List<Admin> alist =
-	 * adao.findAll(); if (a.isEmpty()) { throw new
-	 * AdminException("No one present in the list yet"); } return alist; } throw new
-	 * AdminException("You are not an admin");
-	 * 
-	 * }
-	 * 
-	 */
+	@Override
+	public Admin updateAdmin(Admin admin, String key) throws LoginException, AdminException {
+		checkLogin(key, admin.getAdminId());
+		
+		adminRepository.save(admin);
+		
+		return admin;
+	}
+
+	@Override
+	public String deleteAdmin(Integer adminId, String key) throws LoginException, AdminException {
+		Admin admin = checkLogin(key, adminId);
+		
+		adminRepository.delete(admin);
+		currentUserRepositroy.delete(currentUserRepositroy.findByUuid(key));
+		
+		return "Admin Deleted Sucessfully";
+	}
+
+	@Override
+	public Admin getAdminById(Integer adminId, String key) throws LoginException, AdminException {
+		Admin admin = checkLogin(key, adminId);
+		return admin;
+	}
+
+	public Admin checkLogin(String key, Integer AdminId) throws LoginException, AdminException {
+		Optional<Admin> opt =adminRepository.findById(AdminId);
+		if (opt.isEmpty())
+			throw new AdminException("No Admin Found with id:- " + AdminId);
+
+		Admin admin = opt.get();
+		CurrentUserSession cus = currentUserRepositroy.findByUuid(key);
+
+		if (cus == null)
+			throw new LoginException("Invalid Current Key");
+		if (cus.getUserId() != admin.getAdminId())
+			throw new LoginException("Please Login first.....");
+
+		return admin;
+
+	}
+
 }

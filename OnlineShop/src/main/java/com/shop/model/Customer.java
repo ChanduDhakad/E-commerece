@@ -2,6 +2,24 @@ package com.shop.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,37 +35,34 @@ public class Customer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer customerID;
-
-//    @NotNull(message = "Please enter the username")
-//	@Size(min = 3, message = "Please enter atleast 3 charecter")
-//	@ManyToOne
-//	@JoinColumn(name = "username", referencedColumnName = "username")
-//	private UniqueUsername uniqueUsername;
-
-	// @NotNull(message = "Please enter the password")
-	// @Size(max = 15, min = 8, message = "Your password should be at least of 8
-	// charecters and at most of 15 charecters")
+	private int customerId;
 	
-	private String userName;
-	private String password;
-
-	// @NotNull(message = "Please enter the Firstname")
+	@Size(min = 2, max = 10, message = "FirstName should have 2 to 10 characters")
 	private String firstName;
-
-	// @NotNull(message = "Please enter the lastname")
+	
+	@Size(min = 2, max = 10, message = "FirstName should have 2 to 10 characters")
 	private String lastName;
-
-	// @NotNull(message = "Please enter the contact")
-	private Integer contact;
-//
-	// @NotNull(message = "Please enter the email")
-	// @Email(message = "Please enter a valid email id")
+	
+	@Email(message = "Invalid email")
+	@Column(unique = true)
 	private String email;
-
+	
+	private String password;
 	
 	@JsonIgnore
-	@OneToMany
-	private List<Address> address;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Cart cart;
+	
+	@JsonIgnore
+	@OneToOne(cascade = CascadeType.ALL)
+	private Address address;
+	
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<CardDetails> card;
+	
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "customer") 
+	private List<Order> orderList;
 
 }

@@ -6,4 +6,5 @@ import com.shop.model.Seller;
 
 public interface SellerRepository extends JpaRepository<Seller, Integer>{
 
+	 Seller findByEmail(String eamil);
 }

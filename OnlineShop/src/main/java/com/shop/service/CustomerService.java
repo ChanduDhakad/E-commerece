@@ -5,13 +5,17 @@ import java.util.List;
 import com.shop.exception.AdminException;
 import com.shop.exception.CustomerException;
 import com.shop.exception.LoginException;
+import com.shop.model.Address;
+import com.shop.model.AddressDTO;
 import com.shop.model.Customer;
 
 public interface CustomerService {
-	public Customer registor(Customer customer);
-//	public Customer updateCustomerDetails(Customer customer ,String loginKey) throws CustomerException;
-	public Customer deleteCustomerAccount(Integer id, String loginKey) throws CustomerException,LoginException ;
-	public List<Customer> findAllCustomer(String adminKey) throws AdminException, LoginException;
-	public Customer getCustomerById(Integer id)throws CustomerException;
+public Customer AddCustomer(Customer customer) throws CustomerException;
+	
+	public Customer updateCustomer(String key,Customer customer)throws CustomerException,LoginException;
+	
+	public Address AddAddress(AddressDTO address,String key,Integer CustomerId)throws CustomerException,LoginException;
+	
+	public String deleteCustomer(Integer customerId, String key)throws CustomerException,LoginException;
 	
 }
