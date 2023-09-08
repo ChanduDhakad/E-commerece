@@ -3,6 +3,12 @@
 
 'Online Shop' an E-commerce REST API built over a span of 2 weeks. The API can perform all the CRUD operation with customer validation at every step.
 
+
+
+!![eCommercLogo](https://github.com/ChanduDhakad/E-commerece/assets/97527158/9f80ed71-c7cc-42a9-b199-091f02ec88d7)
+]()
+
+
 >Project demonstration link-
 ><a href="https://drive.google.com/file/d/1C_b6w9mCr9rrBqTKAbBiombcGzqrOFG7/view?usp=sharing">click here</a>
 
